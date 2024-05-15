@@ -1,8 +1,11 @@
-// router/midjourney.js
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const { Midjourney } = require('freezer-midjourney-api');
 
 const router = express.Router();
+
+const prompts = JSON.parse(fs.readFileSync(path.join(__dirname, 'prompts.json'), 'utf-8')).prompts;
 
 const config = {
   ServerId: process.env.SERVER_ID,
@@ -22,20 +25,28 @@ client.init().catch(err => {
 
 // Imagine endpoint
 router.post('/imagine', async (req, res) => {
-  const { prompt } = req.body;
+  const { additional_prompt, prompt_select } = req.body;
   try {
+    if (!additional_prompt || prompt_select === undefined || prompt_select < 0 || prompt_select >= prompts.length) {
+      return res.status(400).json({ message: 'Invalid input' });
+    }
+
+    const prompt = `${additional_prompt}, ${prompts[prompt_select]}`;
     const Imagine = await client.Imagine(prompt, (uri, progress) => {
       console.log('loading', uri, 'progress', progress);
     });
+
     if (!Imagine) {
       return res.status(500).json({ message: 'Imagine request failed' });
     }
+
     res.json(Imagine);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
   }
 });
+
 
 // Variation endpoint
 router.post('/varition', async (req, res) => {
