@@ -1,0 +1,14 @@
+node_modules
+.env
+.vscode
+README.md
+package.json
+package-lock.json
+yarn.lock
+yarn-error.log
+.eslintrc.json
+.eslintignore
+.prettierrc
+.prettierignore
+.editorconfig
+.nvmrc
