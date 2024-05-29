@@ -1,6 +1,3 @@
-# imagine-api
-image generate api
-
 # Image Generation API Server
 
 This repository contains example code for a server that collects data from an EEG device, analyzes the data to classify emotions, and generates images based on these emotions using various image generation APIs.
